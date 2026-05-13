@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔬 物理小报 - 解救物理老师密室逃脱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #0c1929 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 188, 212, 0.1));
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00ff88, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            line-height: 1.8;
+        }
+
+        .counter-box {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+            border-radius: 30px;
+            display: inline-block;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .counter-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 0 10px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .counter-label {
+            color: #fff;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .story-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .story-box h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .story-box p {
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .key-collection {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .key-item {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            border: 3px solid;
+        }
+
+        .key-locked {
+            background: linear-gradient(135deg, #2a2a3a, #1a1a2a);
+            color: #555;
+            border-color: #444;
+        }
+
+        .key-unlocked {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            border-color: #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .episode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .episode-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .episode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .episode-card:hover:not(.locked)::before {
+            left: 100%;
+        }
+
+        .episode-card:hover:not(.locked) {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.4);
+        }
+
+        .episode-card.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+        }
+
+        .episode-card.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .episode-number {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00bcd4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .episode-card.locked .episode-number {
+            background: linear-gradient(135deg, #444, #333);
+        }
+
+        .episode-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .episode-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.7;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .episode-icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 25px;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 40px;
+            position: relative;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 0.5);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00ff88, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-header p {
+            opacity: 0.8;
+        }
+
+        .content-section {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .content-section h3 {
+            color: #00ff88;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-section p {
+            line-height: 2;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .content-section ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            line-height: 2;
+            margin-bottom: 10px;
+        }
+
+        .physics-image {
+            width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .puzzle-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 35px;
+        }
+
+        .puzzle-section h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .puzzle-question {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .hint-box {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 3px solid #00ff88;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .hint-box p {
+            color: #00ff88;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #00ff88, #00bcd4);
+            border: none;
+            color: #000;
+            padding: 18px 50px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        .result-message {
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-correct {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4caf50;
+        }
+
+        .result-wrong {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+        }
+
+        .key-reveal {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+            border-radius: 15px;
+            margin-top: 35px;
+            display: none;
+            animation: keyGlow 0.8s ease;
+        }
+
+        @keyframes keyGlow {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .key-reveal h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .key-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+        }
+
+        .editor-section {
+            background: rgba(0, 188, 212, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 35px;
+            border-left: 4px solid #00bcd4;
+        }
+
+        .editor-section h3 {
+            color: #00bcd4;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+        }
+
+        .editor-profile {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .editor-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00bcd4, #009688);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .editor-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .editor-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .editor-intro {
+            line-height: 1.8;
+            opacity: 0.85;
+            margin-bottom: 15px;
+        }
+
+        .editor-qr {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        .editor-qr-label {
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .congrats-modal {
+            text-align: center;
+        }
+
+        .congrats-icon {
+            font-size: 7rem;
+            margin-bottom: 30px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .congrats-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .congrats-desc {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .final-keys {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .final-key-item {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .teacher-emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .modal-content {
+                margin: 15px;
+                padding: 25px;
+            }
+
+            .episode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-profile {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .congrats-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 物理小报 - 解救物理老师</h1>
+            <p>物理老师被邪恶的科学魔王困在了密室中！</p>
+            <p>你需要闯过四关，收集四把密匙，才能最终解救出老师！</p>
+            <div class="counter-box">
+                <span class="counter-label">🏆 已有</span>
+                <span class="counter-number" id="winCount">0</span>
+                <span class="counter-label">位勇者成功解救老师！</span>
+            </div>
+        </div>
+
+        <div class="story-box">
+            <h3>📖 故事背景</h3>
+            <p>在一个月黑风高的夜晚，邪恶的科学魔王使用黑暗能量将物理老师困在了神秘的密室中。只有掌握了足够物理知识的勇者，才能解开密室中的谜题，收集四把神秘密匙，打开封印之门。你愿意成为这位勇者吗？让我们一起踏上这段物理知识的冒险之旅！</p>
+        </div>
+
+        <div class="key-collection">
+            <div class="key-item key-locked" id="key1">?</div>
+            <div class="key-item key-locked" id="key2">?</div>
+            <div class="key-item key-locked" id="key3">?</div>
+            <div class="key-item key-locked" id="key4">?</div>
+        </div>
+
+        <div class="episode-grid">
+            <div class="episode-card" id="episode1">
+                <div class="episode-icon">🎵</div>
+                <div class="episode-number">1</div>
+                <div class="episode-title">声音的奥秘</div>
+                <div class="episode-subtitle">探索声音是怎么来的</div>
+            </div>
+            <div class="episode-card locked" id="episode2">
+                <div class="episode-icon">☀️</div>
+                <div class="episode-number">2</div>
+                <div class="episode-title">光的魔法</div>
+                <div class="episode-subtitle">探索光影的奇妙世界</div>
+            </div>
+            <div class="episode-card locked" id="episode3">
+                <div class="episode-icon">�</div>
+                <div class="episode-number">3</div>
+                <div class="episode-title">运动的世界</div>
+                <div class="episode-subtitle">比较物体运动的快慢</div>
+            </div>
+            <div class="episode-card locked" id="episode4">
+                <div class="episode-icon">💧</div>
+                <div class="episode-number">4</div>
+                <div class="episode-title">奇妙的物质</div>
+                <div class="episode-subtitle">探索物质的特性</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <div class="modal-content" id="modal-body"></div>
+    </div>
+
+    <div class="modal" id="congratsModal">
+        <div class="modal-content congrats-modal">
+            <div class="congrats-icon">🎉</div>
+            <h2 class="congrats-title">恭喜你成功解救了物理老师！</h2>
+            <div class="teacher-emoji">👨‍🏫✨</div>
+            <p class="congrats-desc">你凭借聪明才智和对生活的细心观察，闯过了所有关卡，集齐了四把密匙！物理老师终于重获自由！</p>
+            <div class="final-keys">
+                <div class="final-key-item">π</div>
+                <div class="final-key-item">e</div>
+                <div class="final-key-item">φ</div>
+                <div class="final-key-item">√2</div>
+            </div>
+            <p class="congrats-desc">四把密匙的完整组合：<span style="color:#ffd700;font-weight:bold;">π + e + φ + √2</span></p>
+            <p class="congrats-desc">你学到了：声音的奥秘、光的魔法、运动的世界和物质的特性！</p>
+            <p class="congrats-desc">物理就在我们身边，希望这次冒险能激发你对科学的好奇心！</p>
+            <button class="submit-btn" onclick="resetGame()">重新开始冒险</button>
+        </div>
+    </div>
+
+    <script>
+        const keys = ['π', 'e', 'φ', '√2'];
+        const unlockedKeys = [];
+        const episodeData = {
+            episode1: {
+                title: '第一期：声音的奥秘',
+                subtitle: '探索声音是怎么来的',
+                content: `
+                    <p>我们每天都能听到各种声音：小鸟的叫声、汽车的喇叭声、同学们的欢笑声...你知道声音是怎么产生的吗？</p>
+                    <h4>🎵 声音是怎么产生的？</h4>
+                    <p>声音是由物体振动产生的！比如敲鼓时，鼓面会振动；说话时，喉咙里的声带会振动。振动停止，声音也就消失了。</p>
+                    <h4>🔊 声音是怎么传播的？</h4>
+                    <p>声音需要通过介质才能传播，比如空气、水、固体都可以传声。在真空中，声音是无法传播的，所以太空中的宇航员需要用无线电交流。</p>
+                    <h4>🌊 声波的小知识</h4>
+                    <p>声音在空气中的传播速度大约是每秒340米，比光速慢很多。所以我们总是先看到闪电，后听到雷声。</p>
+                    <h4>🎧 有趣的回声</h4>
+                    <p>当声音遇到墙壁、大山等障碍物时，会被反射回来，形成回声。在空旷的山谷里大喊一声，就能听到自己的回声啦！</p>
+                    <h4>💫 生活中的声音现象</h4>
+                    <ul>
+                        <li>听诊器：利用声音在固体中传播更清晰的原理</li>
+                        <li>超声波清洗：利用高频声波清洗眼镜、珠宝</li>
+                        <li>次声波：大象用次声波远距离交流</li>
+                    </ul>
+                `,
+                question: '我们在山谷里大喊一声，过了2秒听到回声。如果声音每秒传播340米，那么我们距离对面的山大约有多远？（答案只需填写数字，单位：米）',
+                hint: '回声是声音传播到山再反射回来，所以实际距离是总路程的一半',
+                answer: '340',
+                key: 'π',
+                editor: {
+                    name: '主编：[老师姓名]',
+                    intro: '本期内容由[老师姓名]精心策划，通过有趣的生活现象，带领同学们探索声音的奥秘。希望大家学会用科学的眼光观察身边的世界！',
+                    qrLabel: '扫码关注'
+                }
+            },
+            episode2: {
+                title: '第二期：光的魔法',
+                subtitle: '探索光影的奇妙世界',
+                content: `
+                    <p>清晨的阳光、夜晚的灯光、雨后的彩虹...光让我们看到了这个五彩缤纷的世界！</p>
+                    <h4>☀️ 光是怎么传播的？</h4>
+                    <p>光在空气中是沿直线传播的。你可以试试用手电筒照墙壁，会看到一条笔直的光柱。</p>
+                    <h4>� 影子是怎么形成的？</h4>
+                    <p>当光遇到不透明的物体时，会被挡住，在物体后面形成一个黑暗的区域，这就是影子。早晨和傍晚的影子很长，中午的影子最短。</p>
+                    <h4>🪞 镜子的秘密</h4>
+                    <p>镜子会反射光线，这就是镜面反射。照镜子时，你会看到一个和自己一模一样的像，这就是光的反射现象。</p>
+                    <h4>🌈 彩虹是怎么来的？</h4>
+                    <p>阳光通过水滴时，会发生折射和反射，把白色的光分解成七种颜色：红、橙、黄、绿、蓝、靛、紫，这就是彩虹！</p>
+                    <h4>� 放大镜的神奇作用</h4>
+                    <p>放大镜是凸透镜，能让光线会聚。用放大镜聚光可以点燃火柴，还能让物体看起来更大。</p>
+                `,
+                question: '彩虹有几种颜色？（答案只需填写数字）',
+                hint: '彩虹的颜色顺序是：红、橙、黄、绿、蓝、靛、紫',
+                answer: '7',
+                key: 'e',
+                editor: {
+                    name: '主编：[老师姓名]',
+                    intro: '本期光学专题由[老师姓名]精心设计，通过身边的光影现象，让同学们感受光的神奇。希望大家爱上探索科学！',
+                    qrLabel: '扫码关注'
+                }
+            },
+            episode3: {
+                title: '第三期：运动的世界',
+                subtitle: '比较物体运动的快慢',
+                content: `
+                    <p>我们身边的一切都在运动：跑步的同学、行驶的汽车、飞翔的小鸟...怎么比较它们运动的快慢呢？</p>
+                    <h4>🚶 什么是运动？</h4>
+                    <p>一个物体相对于另一个物体的位置发生变化，我们就说这个物体在运动。坐在行驶的汽车里，相对于地面你是运动的，相对于座椅你是静止的。</p>
+                    <h4>⏱️ 怎么比较快慢？</h4>
+                    <p>在相同时间内，谁跑的距离远，谁就更快。或者跑相同的距离，谁用的时间短，谁就更快。</p>
+                    <h4>� 速度的概念</h4>
+                    <p>速度就是单位时间内物体移动的距离。比如汽车每小时行驶60千米，它的速度就是60千米/小时。</p>
+                    <h4>� 匀速和变速</h4>
+                    <p>如果物体在相等的时间内通过的距离相等，就是匀速运动；否则就是变速运动。自由下落的小球就是变速运动。</p>
+                    <h4>🏃 生活中的速度</h4>
+                    <ul>
+                        <li>人步行：约4-5千米/小时</li>
+                        <li>自行车：约15-20千米/小时</li>
+                        <li>小轿车：约60-120千米/小时</li>
+                        <li>高铁：约300千米/小时</li>
+                    </ul>
+                `,
+                question: '小明用10秒跑了50米，小红用8秒跑了40米，谁跑得更快？（填写"小明"或"小红"）',
+                hint: '计算每秒跑多少米：小明每秒跑5米，小红每秒跑5米，一样快！',
+                answer: '一样快',
+                key: 'φ',
+                editor: {
+                    name: '主编：[老师姓名]',
+                    intro: '本期运动学内容由[老师姓名]精心编排，通过生活中的运动现象，帮助同学们建立速度的概念。运动无处不在，科学也无处不在！',
+                    qrLabel: '扫码关注'
+                }
+            },
+            episode4: {
+                title: '第四期：奇妙的物质',
+                subtitle: '探索物质的特性',
+                content: `
+                    <p>我们周围的一切都是物质：水、空气、石头、书本...它们都有什么特点呢？</p>
+                    <h4>� 物质的三种状态</h4>
+                    <p>物质有三种基本状态：固体、液体和气体。固体有固定的形状和体积，液体有固定体积但没有固定形状，气体既没有固定形状也没有固定体积。</p>
+                    <h4>🔥 热胀冷缩</h4>
+                    <p>大多数物质都会热胀冷缩。温度计就是利用液体热胀冷缩的原理制成的。夏天电线会变长，冬天会变短。</p>
+                    <h4>⚖️ 密度小知识</h4>
+                    <p>密度是物质的特性之一。同样大小的铁块和木块，铁块更重，因为铁的密度比木头大。</p>
+                    <h4>🌊 浮力的秘密</h4>
+                    <p>物体在液体或气体中会受到向上的浮力。密度比水小的物体会浮起来，密度比水大的物体会沉下去。</p>
+                    <h4>🌈 生活中的例子</h4>
+                    <ul>
+                        <li>热气球：利用热空气密度小上升</li>
+                        <li>轮船：利用浮力漂浮在水面</li>
+                        <li>温度计：液体热胀冷缩显示温度</li>
+                    </ul>
+                `,
+                question: '物质有几种基本状态？（答案只需填写数字）',
+                hint: '想一想：冰块是固体，水是液体，水蒸气是气体',
+                answer: '3',
+                key: '√2',
+                editor: {
+                    name: '主编：全体物理组老师',
+                    intro: '感谢同学们一路闯关！物理就在我们身边，希望这次冒险能激发你对科学的好奇心。记住：善于观察、勤于思考，你就是小小科学家！',
+                    qrLabel: '扫码关注'
+                }
+            }
+        };
+
+        let currentEpisode = null;
+        let isAnswered = false;
+
+        function openEpisode(episodeId) {
+            if (document.getElementById(episodeId).classList.contains('locked')) {
+                return;
+            }
+            
+            currentEpisode = episodeId;
+            isAnswered = false;
+            showEpisodeContent();
+            document.getElementById('modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showEpisodeContent() {
+            const episode = episodeData[currentEpisode];
+            
+            const content = `
+                <div class="modal-header">
+                    <h2>${episode.title}</h2>
+                    <p>${episode.subtitle}</p>
+                </div>
+                
+                <div class="content-section">
+                    <h3>📚 本期物理知识</h3>
+                    ${episode.content}
+                </div>
+                
+                <div class="puzzle-section">
+                    <h3>🔑 通关谜题</h3>
+                    <div class="puzzle-question">${episode.question}</div>
+                    <div class="hint-box">
+                        <p>💡 提示：${episode.hint}</p>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="answerInput" placeholder="请输入你的答案" autocomplete="off">
+                    </div>
+                    <button class="submit-btn" onclick="checkAnswer()" id="submitBtn">提交答案</button>
+                    <div class="result-message" id="resultMessage"></div>
+                    <div class="key-reveal" id="keyReveal">
+                        <h3>🎁 恭喜获得通关密匙！</h3>
+                        <div class="key-value">${episode.key}</div>
+                    </div>
+                </div>
+                
+                <div class="editor-section">
+                    <h3>👤 本期主编</h3>
+                    <div class="editor-profile">
+                        <div class="editor-photo">👤</div>
+                        <div class="editor-info">
+                            <div class="editor-name">${episode.editor.name}</div>
+                            <div class="editor-intro">${episode.editor.intro}</div>
+                        </div>
+                        <div>
+                            <div class="editor-qr">📱</div>
+                            <div class="editor-qr-label">${episode.editor.qrLabel}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('keyReveal').style.display = 'none';
+            document.getElementById('resultMessage').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            if (isAnswered) return;
+            
+            const episode = episodeData[currentEpisode];
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const resultMessage = document.getElementById('resultMessage');
+            const keyReveal = document.getElementById('keyReveal');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (userAnswer.toLowerCase() === episode.answer.toLowerCase()) {
+                resultMessage.className = 'result-message result-correct';
+                resultMessage.innerHTML = '✅ 回答正确！太棒了！';
+                resultMessage.style.display = 'block';
+                submitBtn.disabled = true;
+                isAnswered = true;
+
+                setTimeout(() => {
+                    keyReveal.style.display = 'block';
+                    unlockKey(episode.key);
+                }, 1000);
+
+                setTimeout(() => {
+                    closeModal();
+                    unlockNextEpisode();
+                }, 3000);
+            } else {
+                resultMessage.className = 'result-message result-wrong';
+                resultMessage.innerHTML = '❌ 回答错误，请再试一次！';
+                resultMessage.style.display = 'block';
+            }
+        }
+
+        function unlockKey(key) {
+            const keyIndex = keys.indexOf(key);
+            if (keyIndex !== -1 && !unlockedKeys.includes(key)) {
+                unlockedKeys.push(key);
+                document.getElementById(`key${keyIndex + 1}`).className = 'key-item key-unlocked';
+                document.getElementById(`key${keyIndex + 1}`).textContent = key;
+            }
+        }
+
+        function unlockNextEpisode() {
+            const episodeNum = parseInt(currentEpisode.replace('episode', ''));
+            if (episodeNum < 4) {
+                const nextEpisode = document.getElementById(`episode${episodeNum + 1}`);
+                if (nextEpisode) {
+                    nextEpisode.classList.remove('locked');
+                }
+            } else {
+                incrementWinCount();
+                document.getElementById('congratsModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function loadWinCount() {
+            const count = localStorage.getItem('physicsGameWinCount');
+            if (count) {
+                document.getElementById('winCount').textContent = parseInt(count);
+            }
+        }
+
+        function incrementWinCount() {
+            const count = parseInt(localStorage.getItem('physicsGameWinCount') || '0');
+            const newCount = count + 1;
+            localStorage.setItem('physicsGameWinCount', newCount.toString());
+            document.getElementById('winCount').textContent = newCount;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function resetGame() {
+            document.getElementById('congratsModal').style.display = 'none';
+            document.body.style.overflow = '';
+            
+            unlockedKeys.length = 0;
+            keys.forEach((_, index) => {
+                document.getElementById(`key${index + 1}`).className = 'key-item key-locked';
+                document.getElementById(`key${index + 1}`).textContent = '?';
+            });
+            
+            for (let i = 2; i <= 4; i++) {
+                document.getElementById(`episode${i}`).classList.add('locked');
+            }
+            
+            isAnswered = false;
+        }
+
+        document.getElementById('episode1').addEventListener('click', () => openEpisode('episode1'));
+        document.getElementById('episode2').addEventListener('click', () => openEpisode('episode2'));
+        document.getElementById('episode3').addEventListener('click', () => openEpisode('episode3'));
+        document.getElementById('episode4').addEventListener('click', () => openEpisode('episode4'));
+
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+            if (e.target === document.getElementById('congratsModal')) {
+                document.getElementById('congratsModal').style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('modal').style.display === 'block') {
+                    closeModal();
+                } else if (document.getElementById('congratsModal').style.display === 'block') {
+                    document.getElementById('congratsModal').style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+
+        loadWinCount();
+    </script>
+</body>
+</html>
